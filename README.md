@@ -1,2 +1,2 @@
 # ZocoRPC
-rpc framework
+rpc framework based on redis
