@@ -5,9 +5,8 @@
 
 define("DEBUG", false);
 
-require __DIR__ . '/Calculator.php';
-require __DIR__ . '/Client.php';
-
+require __DIR__.'/../vendor/autoload.php';
+use RedisRpc\Client;
 
 $redisServer = new Redis();
 $redisServer->pconnect('127.0.0.1', 6379);

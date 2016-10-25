@@ -1,7 +1,11 @@
 <?php
 
+namespace RedisRpc;
+
 /**
- * @since  2016-01-26
+ * Class Calculator
+ *
+ * @package RedisRpc
  */
 class Calculator {
     /**

@@ -1,49 +1,18 @@
 <?php
-/**
- * @since  2016-01-26
- */
 
-if (!function_exists("debug_print")) {
-    if (defined('DEBUG') && true === DEBUG) {
-        function debug_print($string, $flag = null) {
-            if (!(false === $flag)) {
-                print $string . "\n";
-            }
-        }
-    } else {
-        function debug_print($string, $flag = null) {
-        }
-    }
-}
+namespace RedisRpc;
 
 /**
- * @param        $size
- * @param string $validChars
- * @return string
- */
-function randomString($size) {
-    $validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    $res = "";
-    $numValidChars = strlen($validChars);
-
-    for ($i = 0; $i < $size; $i++) {
-        $randomPick = mt_rand(1, $numValidChars);
-        $randomChar = $validChars[$randomPick - 1];
-        $res .= $randomChar;
-    }
-
-    return $res;
-}
-
-/**
+ * RPC 客户端
+ *
  * Class Client
  *
- * @return Calculator
+ * @package RedisRpc
  */
 class Client {
 
     /**
-     * @var Redis
+     * @var \Redis
      */
     private $redisServer;
 
@@ -87,12 +56,12 @@ class Client {
         /**
          * Send the RPC Request to Redis.
          */
-        $this->redisServer->rpush($this->messageQueue, $message);
+        $this->redisServer->rPush($this->messageQueue, $message);
 
         /**
          * Block on the RPC Response from Redis.
          */
-        $result = $this->redisServer->blpop($responseQueue, $this->timeout);
+        $result = $this->redisServer->blPop($responseQueue,$this->timeout);
         if ($result == null) {
             echo 'empty result';
             exit;

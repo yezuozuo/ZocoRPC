@@ -1,26 +1,15 @@
 <?php
+
+namespace RedisRpc;
+
 /**
- * @since  2016-01-26
+ * Class Server
+ *
+ * @package RedisRpc
  */
-
-require __DIR__ . '/FunctionCall.php';
-
-if (!function_exists("debug_print")) {
-    if (defined('DEBUG') && true === DEBUG) {
-        function debug_print($string, $flag = null) {
-            if (!(false === $flag)) {
-                print $string . "\n";
-            }
-        }
-    } else {
-        function debug_print($string, $flag = null) {
-        }
-    }
-}
-
 class Server {
     /**
-     * @var Redis
+     * @var \Redis
      */
     private $redisServer;
 
@@ -33,6 +22,8 @@ class Server {
      * @var mixed
      */
     private $localObject;
+
+    private $timeout = 0;
 
     /**
      * @param $redisServer
@@ -53,12 +44,11 @@ class Server {
          * 先把消息队列删除
          */
         $this->redisServer->del($this->messageQueue);
-        $timeout = 0;
         while (1) {
             /**
              * Pop a message from the queue.
              */
-            list($messageQueue, $message) = $this->redisServer->blpop($this->messageQueue, $timeout);
+            list($messageQueue, $message) = $this->redisServer->blPop($this->messageQueue, $this->timeout);
 
             debug_print("RPC Request: $message");
 
@@ -80,13 +70,13 @@ class Server {
                 try {
                     $value = eval($code);
                     $rpcResponse  = array('value' => $value);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $rpcResponse = array('exception' => $e->getMessage());
                 }
             }
             $message = json_encode($rpcResponse);
             debug_print("RPC Response: $message");
-            $this->redisServer->rpush($responseQueue, $message);
+            $this->redisServer->rPush($responseQueue, $message);
         }
     }
 }
