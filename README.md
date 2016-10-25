@@ -10,5 +10,5 @@ rpc framework based on redis
 ### Result
 
 ```
-05284%
+05284
 ```
